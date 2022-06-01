@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_choice.css') }}">
+</head>
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg" id="nav-mine">
+        <div class="container-fluid">
+            <a class="navbar-brand text-info" href="/">iMPReSSioN</a>
+            <button class="navbar-toggler bg-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Browse
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="/all/shows">Shows</a></li>
+                    <li><a class="dropdown-item" href="/all/movies">Movies</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Contests</a></li>
+                </ul>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link text-white" href="/login/page">My Account</a>
+                </li>
+            </ul>
+            <form action="/process/search" class="d-flex" role="search" method="POST">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search" name="search">
+                <button class="btn btn-outline-info" type="submit">Search</button>
+            </form>
+            </div>
+        </div>
+    </nav>
+
+
+<div class="body-container">
+
+<!-- Show header ------------------------------- -->
+
+    <div class="show_head">
+        <div class="head_pic">
+            <img src="{{session['show_image']}}" alt="blank">
+        </div>
+        <div class="head_content">
+            <p class="head_title">{{session['show_title']}}</p>
+            <p>{{session['show_full_title']}} | IMDb: {{session['show_imdb']}}</p>
+            <p>{{session['show_plot']}}</p>
+            <p>({{session['show_rating']}}) {{session['show_genres']}}</p>
+        </div>
+    </div>
+
+    <!-- show header end--------------------------- -->
+
+    <!-- Submit rating ------------------------------- -->
+
+    {% if session['user_id'] %}
+
+        {% if user_rating != 1 %}
+
+<!-- Rating form for user to update rating if they've already rated -->
+
+            <div class="body-wrapper">
+                <div class="user_rating">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h1 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" id="accordian" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Your {{session['show_title']}} Rating:<span> {{user_rating.tier}} {{user_rating.rating_total}}</span>
+                                </button>
+                            </h1>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                                <form action="/process/rating/update" method="POST">
+
+                                    <select required name="tier"  class="form-select" aria-label="Default select example">
+                                        <option selected>Select a Tier</option>
+                                        <option value="Bronze">Bronze</option>
+                                        <option value="Silver">Silver</option>
+                                        <option value="Gold">Gold</option>
+                                        <option value="Diamond">Diamond</option>
+                                    </select>
+
+                                <div class="slider">
+                                    <label for="story" class="form-label">Story</label>
+                                    <input type="range" required name="story" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output>{{user_rating.story}}</output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="characters" class="form-label">Characters</label>
+                                    <input type="range" required name="characters" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output>{{user_rating.characters}}</output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="visual appeal" class="form-label">Visual Appeal</label>
+                                    <input type="range" required name="visual_appeal" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output>{{user_rating.visual_appeal}}</output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="music" class="form-label">Music</label>
+                                    <input type="range" required name="music" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output>{{user_rating.music}}</output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="setting" class="form-label">Setting</label>
+                                    <input type="range" required name="setting" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output>{{user_rating.setting}}</output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="enjoyment" class="form-label">Enjoyment</label>
+                                    <input type="range" required name="enjoyment" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output>{{user_rating.enjoyment}}</output>
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-info" id="rating-btn">Update Rating</button>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+
+<!-- Rating form if user hasn't rated yet -->
+
+            <div class="body-wrapper">
+                <div class="user_rating">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h1 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" id="accordian" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Rate {{session['show_title']}}
+                                </button>
+                            </h1>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                                <form action="/process/rating" method="POST">
+
+                                    <select required name="tier"  class="form-select" aria-label="Default select example">
+                                        <option selected>Select a Tier</option>
+                                        <option value="Bronze">Bronze</option>
+                                        <option value="Silver">Silver</option>
+                                        <option value="Gold">Gold</option>
+                                        <option value="Diamond">Diamond</option>
+                                    </select>
+
+                                <div class="slider">
+                                    <label for="story" class="form-label">Story</label>
+                                    <input type="range" required name="story" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output></output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="characters" class="form-label">Characters</label>
+                                    <input type="range" required name="characters" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output></output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="visual appeal" class="form-label">Visual Appeal</label>
+                                    <input type="range" required name="visual_appeal" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output></output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="music" class="form-label">Music</label>
+                                    <input type="range" required name="music" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output></output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="setting" class="form-label">Setting</label>
+                                    <input type="range" required name="setting" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output></output>
+                                </div>
+
+                                <div class="slider">
+                                    <label for="enjoyment" class="form-label">Enjoyment</label>
+                                    <input type="range" required name="enjoyment" class="form-range text-info" min="0" max="10" step="0.5" id="slider-custom" oninput="this.nextElementSibling.value = this.value"><output></output>
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-info" id="rating-btn">Submit Rating</button>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+    <!-- end of rating submit ------------------------------------ -->
+
+
+</div>
+
+
+
+
+
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
